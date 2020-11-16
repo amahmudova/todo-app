@@ -1,0 +1,23 @@
+<div>
+  <div class="wrapper-list">
+    <div *ngIf="!todos.length" class="empty-list">There is no any todo yet...</div>
+
+    <div *ngFor="let todo of todos"
+         class="list-item"
+         (click)="toggleTodo(todo)">
+      <div class="title-wrap">
+        <mat-checkbox (click)="$event.preventDefault()"
+                      class="checkbox"
+                      color="primary"
+                      [checked]="todo.done">
+
+        </mat-checkbox>
+        <span class="text" [ngClass]="{'done': todo.done}">{{todo.title}}</span>
+      </div>
+      <button mat-icon-button (click)="$event.preventDefault(); deleteTodo(todo)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+
+</div>
