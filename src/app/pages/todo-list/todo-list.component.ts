@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
+import { Subscription } from 'rxjs';
 
 import { Todo } from '../../models/todo.model';
 import { TodoService } from '../../services/todo.service';
@@ -8,8 +10,9 @@ import { TodoService } from '../../services/todo.service';
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.scss']
 })
-export class TodoListComponent implements OnInit {
+export class TodoListComponent implements OnInit, OnDestroy {
   todos: Todo[];
+  subscription: Subscription;
 
   constructor(private todoService: TodoService) { }
 
@@ -18,7 +21,7 @@ export class TodoListComponent implements OnInit {
   }
 
   private getTodoList(): void {
-    this.todoService.getTodoList().subscribe(res => {
+    this.subscription = this.todoService.getTodoList().subscribe(res => {
       this.todos = res.sort((a, b) => {
         if (a.title > b.title) { return -1; }
         if (b.title > a.title) { return 1; }
@@ -34,5 +37,9 @@ export class TodoListComponent implements OnInit {
   async deleteTodo(todo: Todo): Promise<void> {
     await this.todoService.deleteTodo(todo).toPromise();
     this.todos = this.todos.filter(item => item.id !== todo.id);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { v4 as uuid } from 'uuid';
 
@@ -10,9 +11,10 @@ import { LoadingState, Todo } from '../../models/todo.model';
   templateUrl: './add-new-todo.component.html',
   styleUrls: ['./add-new-todo.component.scss']
 })
-export class AddNewTodoComponent {
+export class AddNewTodoComponent implements OnDestroy {
   inputValue = '';
   query: Todo[] = [];
+  subscription: Subscription;
 
   constructor(private todoService: TodoService) {
   }
@@ -21,7 +23,7 @@ export class AddNewTodoComponent {
     return LoadingState;
   }
 
-  addTodo(): void {
+  async addTodo(): Promise<void> {
     this.inputValue = this.inputValue.trim();
     if (!this.inputValue) { return; }
 
@@ -34,14 +36,18 @@ export class AddNewTodoComponent {
 
     this.query.push(item);
 
-    this.todoService.addTodo(item).subscribe(res => {
-      item.state = res.success ? LoadingState.success : LoadingState.fail;
+    this.todoService.addTodo(item);
 
-      setTimeout(() => {
-        this.query = this.query.filter(todo => todo.id !== item.id);
-      }, 5000);
+    this.subscription = this.todoService.loading$.subscribe(res => {
+      if (item.id === res.id) {
+        item.state = res.success ? LoadingState.success : LoadingState.fail;
+      }
     });
 
     this.inputValue = '';
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

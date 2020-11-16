@@ -1,14 +1,32 @@
 import { Injectable } from '@angular/core';
 
-import { delay } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { concatMap, map, take, tap } from 'rxjs/operators';
+import { Observable, of, Subject, timer } from 'rxjs';
 
 import { Todo } from '../models/todo.model';
 
 
 @Injectable({providedIn: 'root'})
 export class TodoService {
+  todos$: Subject<any> = new Subject<any>();
+  loading$: Subject<any> = new Subject<any>();
+
   constructor() {
+    this.todos$.pipe(
+      concatMap(todo => {
+      todo.success = Math.random() >= 0.2;
+
+      return timer((Math.random() * 5 + 5) * 1000).pipe(
+        take(1),
+        tap(() => {
+          if (todo.success) {
+            this._todos.push(todo);
+            localStorage.setItem('todos', JSON.stringify(this._todos));
+          }
+        }),
+        map(() => todo)
+      );
+    })).subscribe((todo) => this.loading$.next(todo));
   }
 
   private _todos: Todo[] = [];
@@ -21,14 +39,8 @@ export class TodoService {
     return of(this._todos);
   }
 
-  addTodo(todo: Todo): Observable<any> {
-    const isSuccess = Math.random() >= 0.2;
-    delete todo.state;
-    if (isSuccess) {
-      this._todos.push(todo);
-      localStorage.setItem('todos', JSON.stringify(this._todos));
-    }
-    return of({success: isSuccess}).pipe(delay((Math.random() * 5 + 5) * 1000));
+  addTodo(todo: Todo): void {
+    this.todos$.next(todo);
   }
 
   toggleTodo(todo: Todo): Observable<any> {
