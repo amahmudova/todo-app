@@ -35,15 +35,11 @@ export class AddNewTodoComponent {
     this.query.push(item);
 
     this.todoService.addTodo(item).subscribe(res => {
-      if (res.success) {
-        item.state = LoadingState.success;
-      } else {
-        item.state = LoadingState.fail;
-      }
+      item.state = res.success ? LoadingState.success : LoadingState.fail;
 
       setTimeout(() => {
         this.query = this.query.filter(todo => todo.id !== item.id);
-      }, 10000);
+      }, 5000);
     });
 
     this.inputValue = '';
