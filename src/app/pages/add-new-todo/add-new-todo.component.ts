@@ -23,7 +23,7 @@ export class AddNewTodoComponent implements OnDestroy {
     return LoadingState;
   }
 
-  async addTodo(): Promise<void> {
+  addTodo(): void {
     this.inputValue = this.inputValue.trim();
     if (!this.inputValue) { return; }
 
