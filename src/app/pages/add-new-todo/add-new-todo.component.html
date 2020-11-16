@@ -1,4 +1,6 @@
 <div class="page-wrapper">
+  <button class="redirect-button" mat-button routerLink="/">View all todos</button>
+
   <div class="todos-wrapper">
     <div>
       <input matInput [(ngModel)]="inputValue" (keyup.enter)="addTodo()">

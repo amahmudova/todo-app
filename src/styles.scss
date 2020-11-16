@@ -1,4 +1,48 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/theming';
+@import '~src/app/styles/variables';
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: $background;
+}
+
+.mat-button {
+  color: $light-text;
+
+  &:hover {
+    background: $hover-background;
+  }
+}
+
+.mat-checkbox-frame {
+  border-color: unset;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  border: 1px solid $border;
+  border-radius: 8px;
+  padding: 16px;
+  color: $light-text;
+  box-sizing: border-box;
+
+  .text {
+    line-height: 24px;
+    padding-right: 16px;
+  }
+
+  &:hover {
+    background: $hover-background;
+  }
+}
+
+.mat-button.redirect-button {
+  margin: 16px;
+}

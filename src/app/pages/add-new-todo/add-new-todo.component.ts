@@ -1,22 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+
 import { v4 as uuid } from 'uuid';
 
 import { TodoService } from '../../services/todo.service';
-import { LoadingState } from '../../models/todo.model';
+import { LoadingState, Todo } from '../../models/todo.model';
 
 @Component({
   selector: 'app-add-new-todo',
   templateUrl: './add-new-todo.component.html',
   styleUrls: ['./add-new-todo.component.scss']
 })
-export class AddNewTodoComponent implements OnInit {
+export class AddNewTodoComponent {
   inputValue = '';
-  query = [];
+  query: Todo[] = [];
 
   constructor(private todoService: TodoService) {
-  }
-
-  ngOnInit(): void {
   }
 
   get loadingState() {
